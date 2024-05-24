@@ -8,6 +8,7 @@
 - name: Add Docker Repository
   ansible.builtin.apt_repository:
     repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable
+    filename: docker
     state: present
 
 - name: Update apt and install docker-ce
@@ -15,3 +16,9 @@
     name: docker-ce
     state: latest
     update_cache: true
+
+- name: Add user {{ lookup('env', 'USER') }} to docker group
+  user:
+    name: "{{ lookup('env', 'USER') }}"
+    groups: docker
+    append: yes
