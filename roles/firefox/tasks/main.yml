@@ -1,0 +1,24 @@
+- name: Add Mozilla apt repository key.
+  ansible.builtin.get_url:
+    url: https://packages.mozilla.org/apt/repo-signing-key.gpg
+    dest: /etc/apt/keyrings/packages.mozilla.org.asc
+    mode: "0644"
+    force: true
+
+- name: Add Mozilla Repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main
+    filename: mozilla.list
+    state: present
+
+- name: Copy Mozilla apt preferences
+  ansible.builtin.copy:
+    src: mozilla.pref
+    dest: /etc/apt/preferences.d/mozilla.pref
+    mode: "0644"
+
+- name: Update apt and install Firefox
+  ansible.builtin.apt:
+    name: firefox
+    state: latest
+    update_cache: true

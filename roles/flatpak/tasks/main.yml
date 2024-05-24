@@ -1,0 +1,24 @@
+- name: Install flatpak
+  ansible.builtin.apt:
+    name: flatpak
+    state: latest
+    update_cache: true
+
+- name: Install GNOME Flatpak Plugin
+  ansible.builtin.apt:
+    name: gnome-software-plugin-flatpak
+    state: latest
+  when: "ansible_env['XDG_CURRENT_DESKTOP'] == 'GNOME'"
+
+- name: Install GNOME Flatpak Plugin
+  ansible.builtin.apt:
+    name: plasma-discover-backend-flatpak
+    state: latest
+  when: "ansible_env['XDG_CURRENT_DESKTOP'] == 'KDE'"
+
+- name: Setup flathub
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: user

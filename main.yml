@@ -1,0 +1,14 @@
+#!/usr/bin/env -S ansible-playbook --ask-become-pass
+- name: Debian Workstation
+  hosts: 127.0.0.1
+  connection: local
+  become: true
+  roles:
+    #- role: firefox
+    #- role: vscode
+    #- role: docker
+    #- role: flatpak
+    #  vars:
+    #    apps:
+    #      - com.spotify.Client
+    - role: nodejs
