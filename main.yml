@@ -6,9 +6,10 @@
   roles:
     #- role: firefox
     #- role: vscode
-    #- role: docker
+    - role: docker
     #- role: flatpak
     #  vars:
     #    apps:
     #      - com.spotify.Client
-    - role: nodejs
+    # - role: nodejs
+    # - role: chrome

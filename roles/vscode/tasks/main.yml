@@ -8,7 +8,7 @@
 - name: Add Microsoft Repository
   ansible.builtin.apt_repository:
     repo: deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.com.asc] http://packages.microsoft.com/repos/code stable main
-    filename: vscode.list
+    filename: vscode
     state: present
 
 - name: Update apt and install VSCode

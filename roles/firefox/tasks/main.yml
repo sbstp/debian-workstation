@@ -8,7 +8,7 @@
 - name: Add Mozilla Repository
   ansible.builtin.apt_repository:
     repo: deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main
-    filename: mozilla.list
+    filename: mozilla
     state: present
 
 - name: Copy Mozilla apt preferences

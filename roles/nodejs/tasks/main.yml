@@ -8,7 +8,7 @@
 - name: Add NodeSource deb repository
   ansible.builtin.apt_repository:
     repo: 'deb [arch=amd64 signed-by=/etc/apt/keyrings/nodesource.asc] https://deb.nodesource.com/node_22.x nodistro main'
-    filename: nodesource.list
+    filename: nodesource
     state: present
 
 - name: Add NodeSource repository preferences
