@@ -1,0 +1,29 @@
+- name: Download Go
+  ansible.builtin.get_url:
+    url: "https://go.dev/dl/go{{ golang_version }}.linux-amd64.tar.gz"
+    dest: /opt
+  register: golang_out_archive
+
+- name: Create Go install directory
+  ansible.builtin.file:
+    path: "/opt/go-{{ golang_version }}"
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+  register: golang_install_dir
+
+- name: Unarchive Go
+  ansible.builtin.unarchive:
+    src: "{{ golang_out_archive.dest }}"
+    dest: "{{ golang_install_dir.path }}"
+    extra_opts: '--strip-components=1'
+    remote_src: true
+
+- name: Install Golang profile for SDK environment variables
+  ansible.builtin.template:
+    src: golang.sh.j2
+    dest: /etc/profile.d/golang.sh
+    owner: root
+    group: root
+    mode: "u=rw,go=r"

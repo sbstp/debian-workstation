@@ -8,6 +8,7 @@
     - role: chrome
     - role: vscode
     - role: docker
+    - role: golang
     - role: nodejs
     - role: flatpak
       vars:
