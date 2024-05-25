@@ -1,0 +1,41 @@
+- name: Install curl
+  ansible.builtin.apt:
+    name: curl
+    state: present
+
+- name: Download and run rustup intall script
+  become: false
+  ansible.builtin.shell:
+    cmd: curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
+    creates: "{{ lookup('env', 'HOME') }}/.rustup/settings.toml"
+
+- name: Set rustup bin path
+  become: false
+  ansible.builtin.set_fact:
+    rustup_path: "{{ lookup('env', 'HOME') }}/.cargo/bin/rustup"
+
+- name: Install stable toolchain
+  become: false
+  ansible.builtin.shell:
+    cmd: "{{ rustup_path }} install stable"
+  register: out_install_stable_toolchain
+  changed_when: "'unchanged' not in out_install_stable_toolchain.stdout"
+
+- name: Install Rust source
+  become: false
+  ansible.builtin.shell:
+    cmd: "{{ rustup_path }} component add rust-src"
+  register: out_install_rust_src
+  changed_when: "'is up to date' not in out_install_rust_src.stderr"
+
+- name: Install Rust Analyzer
+  become: false
+  ansible.builtin.shell:
+    cmd: "{{ rustup_path }} component add rust-analyzer"
+  register: out_install_rust_analyzer
+  changed_when: "'is up to date' not in out_install_rust_analyzer.stderr"
+
+- name: Copy Rustup shell setup to /etc/profile.d
+  ansible.builtin.template:
+    src: rustup.sh.j2
+    dest: /etc/profile.d/rustup.sh

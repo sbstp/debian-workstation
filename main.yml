@@ -10,14 +10,14 @@
         update_cache: true
         state: latest
   roles:
+    - role: firefox
+    - role: chrome
+    - role: vscode
+    - role: docker
+    - role: rustup
     - role: golang
-    # - role: firefox
-    # - role: chrome
-    # - role: vscode
-    # - role: docker
-    # - role: golang
-    # - role: nodejs
-    # - role: flatpak
-    #   vars:
-    #     flatpak_apps:
-    #       - com.spotify.Client
+    - role: nodejs
+    - role: flatpak
+      vars:
+        flatpak_apps:
+          - com.spotify.Client
