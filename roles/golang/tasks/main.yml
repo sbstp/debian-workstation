@@ -1,29 +1,63 @@
-- name: Download Go
-  ansible.builtin.get_url:
-    url: "https://go.dev/dl/go{{ golang_version }}.linux-amd64.tar.gz"
-    dest: /opt
-  register: golang_out_archive
+- name: Install Golang
+  block:
+    - name: Download Golang {{ golang_version }}
+      ansible.builtin.get_url:
+        url: "https://go.dev/dl/go{{ golang_version }}.linux-amd64.tar.gz"
+        dest: /opt
+      when: "'golang' not in ansible_local or ansible_local.golang.version != golang_version"
+      register: golang_out_archive
 
-- name: Create Go install directory
-  ansible.builtin.file:
-    path: "/opt/go-{{ golang_version }}"
-    owner: root
-    group: root
-    mode: "u=rwx,go=rx"
-    state: directory
-  register: golang_install_dir
+    - name: Create Golang install directory
+      ansible.builtin.file:
+        path: "/opt/go-{{ golang_version }}"
+        owner: root
+        group: root
+        mode: "u=rwx,go=rx"
+        state: directory
+      register: golang_out_install_dir
 
-- name: Unarchive Go
-  ansible.builtin.unarchive:
-    src: "{{ golang_out_archive.dest }}"
-    dest: "{{ golang_install_dir.path }}"
-    extra_opts: '--strip-components=1'
-    remote_src: true
+    - name: Unarchive Golang
+      ansible.builtin.unarchive:
+        src: "{{ golang_out_archive.dest }}"
+        dest: "{{ golang_out_install_dir.path }}"
+        extra_opts: '--strip-components=1'
+        remote_src: true
+      when: golang_out_archive.changed
 
-- name: Install Golang profile for SDK environment variables
-  ansible.builtin.template:
-    src: golang.sh.j2
-    dest: /etc/profile.d/golang.sh
-    owner: root
-    group: root
-    mode: "u=rw,go=r"
+    - name: Install Golang profile for SDK environment variables
+      ansible.builtin.template:
+        src: golang.sh.j2
+        dest: /etc/profile.d/golang.sh
+        owner: root
+        group: root
+        mode: "u=rw,go=r"
+
+    - name: Create facts directory
+      ansible.builtin.file:
+        path: /etc/ansible/facts.d
+        owner: root
+        group: root
+        mode: "u=rwx,go=rx"
+        state: directory
+
+    - name: Create Golang facts
+      ansible.builtin.copy:
+        content: "{{ golang_facts | to_json }}"
+        dest: /etc/ansible/facts.d/golang.fact
+      vars:
+        golang_facts:
+          version: "{{ golang_version }}"
+          install_dir: "{{ golang_out_install_dir.path }}"
+
+    - name: Remove previous version if a new one was installed
+      ansible.builtin.file:
+        path: "/opt/go-{{ ansible_local.golang.version }}"
+        state: absent
+      when: "golang_out_archive.changed and 'golang' in ansible_local"
+
+  always:
+    - name: Remove Golang archive
+      ansible.builtin.file:
+        path: "{{ golang_out_archive.dest }}"
+        state: absent
+      when: golang_out_archive.changed
