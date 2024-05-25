@@ -3,6 +3,12 @@
   hosts: 127.0.0.1
   connection: local
   become: true
+  pre_tasks:
+    - name: Install apt https tranport
+      ansible.builtin.apt:
+        name: apt-transport-https
+        update_cache: true
+        state: latest
   roles:
     - role: firefox
     - role: chrome
