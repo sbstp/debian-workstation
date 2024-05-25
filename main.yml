@@ -4,12 +4,12 @@
   connection: local
   become: true
   roles:
-    #- role: firefox
-    #- role: vscode
+    - role: firefox
+    - role: chrome
+    - role: vscode
     - role: docker
-    #- role: flatpak
-    #  vars:
-    #    apps:
-    #      - com.spotify.Client
-    # - role: nodejs
-    # - role: chrome
+    - role: nodejs
+    - role: flatpak
+      vars:
+        flatpak_apps:
+          - com.spotify.Client

@@ -18,7 +18,7 @@
     update_cache: true
 
 - name: Add user {{ lookup('env', 'USER') }} to docker group
-  user:
+  ansible.builtin.user:
     name: "{{ lookup('env', 'USER') }}"
     groups: docker
     append: yes
