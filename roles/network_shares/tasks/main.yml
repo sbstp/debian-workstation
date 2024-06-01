@@ -1,0 +1,36 @@
+- name: Install cifs-utils
+  ansible.builtin.apt:
+    name: cifs-utils
+    update_cache: true
+    state: latest
+
+- name: Lookup user name
+  ansible.builtin.set_fact:
+    user_name: "{{ lookup('env', 'USER') }}"
+
+- name: Get {{ user_name }} user passwd info
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ user_name }}"
+
+- name: Extract user id and gid
+  ansible.builtin.set_fact:
+    user_id: "{{ ansible_facts.getent_passwd[user_name].1 }}"
+    user_gid: "{{ ansible_facts.getent_passwd[user_name].2 }}"
+
+- name: Copy mount file
+  ansible.builtin.template:
+    src: mnt-tank.mount.j2
+    dest: /etc/systemd/system/mnt-tank.mount
+
+- name: Copy automount file
+  ansible.builtin.copy:
+    src: mnt-tank.automount
+    dest: /etc/systemd/system/mnt-tank.automount
+
+- name: Enable automount
+  ansible.builtin.systemd_service:
+    name: mnt-tank.automount
+    enabled: true
+    daemon-reload: true
+    state: started

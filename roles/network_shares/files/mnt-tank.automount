@@ -1,0 +1,9 @@
+[Unit]
+Description=\\neo\tank automount
+
+[Automount]
+Where=/mnt/tank
+TimeoutIdleSec=300
+
+[Install]
+WantedBy=multi-user.target
