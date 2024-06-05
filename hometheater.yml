@@ -1,0 +1,22 @@
+#!/usr/bin/env -S ansible-playbook
+- name: Setup hometheater PCs
+  hosts: hometheaters
+  become: true
+  pre_tasks:
+    - name: Install apt https tranport
+      ansible.builtin.apt:
+        name: apt-transport-https
+        update_cache: true
+        state: latest
+  roles:
+    - role: firefox
+    # - role: chrome
+    - role: network_shares
+    - role: flatpak
+      vars:
+        flatpak_apps:
+          - com.spotify.Client
+    - role: backports
+      vars:
+        packages:
+          linux-image-amd64
