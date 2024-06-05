@@ -1,0 +1,13 @@
+- name: Setup backports
+  ansible.builtin.apt_repository:
+    repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
+    state: present
+    filename: backports
+    update_cache: true
+
+- name: Install package from backports
+  ansible.builtin.apt:
+    package: "{{ item }}"
+    default_release: "{{ ansible_distribution_release }}-backports"
+    state: latest
+  with_items: "{{ packages }}"
