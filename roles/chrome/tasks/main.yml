@@ -11,21 +11,16 @@
     filename: google-chrome-ansible
     state: present
 
+# https://support.google.com/chrome/a/answer/9052345?hl=en#zippy=%2Cstep-turn-off-chrome-browser-updates
+- name: Disable google-chrome-stable sources
+  ansible.builtin.copy:
+    dest: /etc/default/google-chrome
+    content: |
+      repo_add_once="false"
+      repo_reenable_on_distupgrade="false"
+
 - name: Update apt and install google-chrome-stable
   ansible.builtin.apt:
     name: google-chrome-stable
     state: latest
     update_cache: true
-
-- name: Verify in google-chrome-stable's apt sources exist
-  stat:
-    path: /etc/apt/sources.list.d/google-chrome.list
-  register: google_chrome_sources
-
-- name: Disable google-chrome-stable's apt sources
-  ansible.builtin.lineinfile:
-    path: /etc/apt/sources.list.d/google-chrome.list
-    regex: "^(deb.+)$"
-    line: "# \\1"
-    backrefs: true
-  when: google_chrome_sources.stat.exists
