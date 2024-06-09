@@ -8,7 +8,7 @@
 - name: Add Google Repository
   ansible.builtin.apt_repository:
     repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/google.asc] https://dl.google.com/linux/chrome/deb/ stable main
-    filename: google-chrome
+    filename: google-chrome-ansible
     state: present
 
 - name: Update apt and install google-chrome-stable
@@ -16,3 +16,10 @@
     name: google-chrome-stable
     state: latest
     update_cache: true
+
+- name: Disable google-chrome-stable's apt sources
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list.d/google-chrome
+    regex: "^(deb.+)$"
+    line: "# \\1"
+    backrefs: true
