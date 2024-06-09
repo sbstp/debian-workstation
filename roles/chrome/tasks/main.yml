@@ -17,9 +17,15 @@
     state: latest
     update_cache: true
 
+- name: Verify in google-chrome-stable's apt sources exist
+  stat:
+    path: /etc/apt/sources.list.d/google-chrome.list
+  register: google_chrome_sources
+
 - name: Disable google-chrome-stable's apt sources
   ansible.builtin.lineinfile:
-    path: /etc/apt/sources.list.d/google-chrome
+    path: /etc/apt/sources.list.d/google-chrome.list
     regex: "^(deb.+)$"
     line: "# \\1"
     backrefs: true
+  when: google_chrome_sources.stat.exists
