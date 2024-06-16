@@ -9,8 +9,8 @@
         update_cache: true
         state: latest
   roles:
-    - role: firefox
-    # - role: chrome
+    #- role: firefox
+    - role: chrome
     - role: network_shares
     - role: flatpak
       vars:
