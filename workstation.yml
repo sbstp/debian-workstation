@@ -9,14 +9,14 @@
         update_cache: true
         state: latest
   roles:
-    - role: firefox
+    #- role: firefox
     #- role: chrome
     #- role: vscode
     #- role: docker
     #- role: rustup
-    - role: golang
+    # - role: golang
     #- role: nodejs
-    # - role: network_shares
+    - role: network_shares
     #- role: flatpak
     #  vars:
     #    flatpak_apps:

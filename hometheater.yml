@@ -1,4 +1,4 @@
-#!/usr/bin/env -S ansible-playbook
+#!/usr/bin/env -S ansible-playbook --ask-pass --ask-become-pass
 - name: Setup hometheater PCs
   hosts: hometheaters
   become: true
@@ -9,14 +9,14 @@
         update_cache: true
         state: latest
   roles:
-    #- role: firefox
+    - role: firefox
     - role: chrome
     - role: network_shares
     - role: flatpak
       vars:
         flatpak_apps:
           - com.spotify.Client
-    - role: backports
-      vars:
-        packages:
-          linux-image-amd64
+    # - role: backports
+    #   vars:
+    #     packages:
+    #       linux-image-amd64
